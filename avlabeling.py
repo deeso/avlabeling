@@ -49,7 +49,7 @@ def post_process_data(raw_results, base_location=None):
             print ("[X] File entry does not contain a VIRUS_SHARE separator: %s"%f)
             continue
         h = f.split(VIRUS_SHARE_HASH)[1].strip()
-        hash_results[h] = l.strip()
+        hash_results[h] = (l.strip(), line)
     return hash_results
 
 def read_samples_directory(base_location):
@@ -59,18 +59,19 @@ def read_samples_directory(base_location):
 def write_files_results(hash_results, output_sqllite_db, av_engine='clamav'):
     conn = sqlite3.connect(output_sqllite_db)
     c = conn.cursor()
-    rows = [(h,l, av_engine) for h,l in hash_results.items()]
-    c.executemany("INSERT INTO hash_labels VALUES (?,?,?)", rows)
+    rows = []
+    for h,l_m in hash_results.items():
+        l, m = l_m
+        rows.append((h,l, m, av_engine))
+    c.executemany("INSERT INTO hash_labels VALUES (?,?,?,?)", rows)
     conn.commit()
-
 
 def init_database(output_sqllite_db):
     conn = sqlite3.connect(output_sqllite_db)
     c = conn.cursor()
-    c.execute('''CREATE TABLE hash_labels (hash, label, av_engine)''')
+    c.execute('''CREATE TABLE hash_labels (hash, label, meta, av_engine)''')
     c.close()
     conn.commit()
-
 
 if __name__ == '__main__':
     #print sys.argv
