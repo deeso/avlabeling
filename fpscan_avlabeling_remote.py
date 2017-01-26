@@ -22,7 +22,7 @@ END_DATA_TERM = "=====END_DATA_DUMP====="
 # print ("Started: %s"%stime.strftime("%H:%M:%S.%f %m-%d-%Y"))
 # print ("Ended: %s"%etime.strftime("%H:%M:%S.%f %m-%d-%Y"))
 COMPLETED_TERM = "=====COMPLETED====="
-FPSCAN_AVLABEL_CMD = "python {avlabel_location}/fpscan_avlabeling.py {base_location} {start} {end}"
+FPSCAN_AVLABEL_CMD = "python {avlabel_location}/fpscan_avlabeling_stdout.py {base_location} {start} {end}"
 def generate_command(avlabel_location, base_location, start, end):
     cmd_dict = {'avlabel_location':avlabel_location, 'base_location':base_location, 'start':start, 'end':end}
     cmd = FPSCAN_AVLABEL_CMD.format(**cmd_dict)
