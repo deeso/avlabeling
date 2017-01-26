@@ -1,4 +1,4 @@
-import paramiko, re, time, sys, libvirt, threading, socket, subprocess, shelx
+import paramiko, re, time, sys, libvirt, threading, socket, subprocess, shlex
 from datetime import datetime
 from socket import error as socket_error
 
@@ -68,7 +68,7 @@ def determine_host_ip_addr(client):
                     break
         except:
             pass
-        
+
     close_virt_connection(virt_conn)
     return ip_address
 
@@ -83,7 +83,7 @@ def ssh_to_target (hostname, username, password):
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname, username=username, password=password)
     return client
-  
+
 def exec_cmds(client, password, cmds):
     data = []
     for cmd in cmds:
@@ -95,7 +95,7 @@ def exec_cmds(client, password, cmds):
         session.exec_command(cmd)
         stdin = session.makefile('wb', -1)
         stdout = session.makefile('rb', -1)
-        #you have to check if you really need to send password here 
+        #you have to check if you really need to send password here
         stdin.write(password +'\n')
         stdin.flush()
         session.recv_exit_status()
@@ -214,7 +214,7 @@ def open_virt_connection(uri="qemu:///system"):
         print "XXXX - Failed to open a sockt to libvirt"
         raise
         return None
- 
+
 def start_function (client):
     keyed = {"client":client}
     #cmd  = VIR_START.format(**keyed)
@@ -233,7 +233,7 @@ def start_function (client):
             pass
     close_virt_connection(virt_conn)
     return res#exec_command(cmd)
- 
+
 def stop_function (client, timeout=.5):
     keyed = {"client":client}
     virt_conn = open_virt_connection()
@@ -254,7 +254,7 @@ def stop_function (client, timeout=.5):
     close_virt_connection(virt_conn)
     #cmd  = VIR_STOP.format(**keyed)
     return res#exec_command(cmd)
- 
+
 def start_host_list (host_list):
     threads = []
     for host in host_list:
@@ -265,27 +265,27 @@ def start_host_list (host_list):
     for t in threads:
         t.join()
         #time.sleep(SLEEP_SECS)
-        
-        
- 
+
+
+
 def stop_host_list(host_list):
     for host in host_list:
         stop_function(host)
- 
+
 def snapshot_function(host):
     keyed = {"client":host}
     cmd  = VIR_SNAPSHOT.format(**keyed)
     return exec_command(cmd)
- 
+
 def snapshot_host_list (host_list):
     for host in host_list:
         snapshot_function(host)
- 
+
 def revert_function(host):
     keyed = {"client":host}
     cmd  = VIR_REVERT.format(**keyed)
     return exec_command(cmd)
- 
+
 def revert_host_list (host_list):
     for host in host_list:
         revert_function(host)
@@ -300,7 +300,7 @@ def start_hosts(user, password, host_list):
         t = threading.Thread(target=test_host_is_up, args=(h, user, password, r))
         threads.append((t, r))
         t.start()
-    
+
     for t,r in threads:
         t.join()
         if 'result' in r:

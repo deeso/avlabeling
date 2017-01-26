@@ -4,6 +4,11 @@ from datetime import datetime
 def time_str():
     return str(datetime.now().strftime("%H:%M:%S.%f %m-%d-%Y"))
 
+START_DATA_TERM = "=====START_DATA_DUMP====="
+END_DATA_TERM = "=====END_DATA_DUMP====="
+# print ("Started: %s"%stime.strftime("%H:%M:%S.%f %m-%d-%Y"))
+# print ("Ended: %s"%etime.strftime("%H:%M:%S.%f %m-%d-%Y"))
+COMPLETED_TERM = "=====COMPLETED====="
 FPSCAN_ARGS = "fpscan --report --applications --adware {target_files}"
 def create_fpscan_cmd(target_files):
     keyed = {'target_files':" ".join(target_files)}
@@ -85,11 +90,11 @@ if __name__ == '__main__':
     base_location = sys.argv[1]
     start = int(sys.argv[2])
     end = int(sys.argv[3])
-    output_sqllite_db = sys.argv[4]
-    try:
-        os.stat(output_sqllite_db)
-    except:
-        init_database(output_sqllite_db)
+    #output_sqllite_db = sys.argv[4]
+    #try:
+    #    os.stat(output_sqllite_db)
+    #except:
+    #    init_database(output_sqllite_db)
 
     stime = datetime.now()
     samples = read_samples_directory(base_location)
@@ -108,10 +113,13 @@ if __name__ == '__main__':
         print ("[=] Processed %d files @ %d"%(len(_hashes_labels), pos+start))
         pos += window
 
-    if len(hashes_labels) > 0:
-        write_files_results(hashes_labels, output_sqllite_db, 'fpscan')
+    #if len(hashes_labels) > 0:
+    #    write_files_results(hashes_labels, output_sqllite_db, 'fpscan')
 
+    print (START_DATA_TERM)
+    print (json.dumps(hashes_labels))
+    print (END_DATA_TERM)
     etime = datetime.now()
-
     print ("Started: %s"%stime.strftime("%H:%M:%S.%f %m-%d-%Y"))
     print ("Ended: %s"%etime.strftime("%H:%M:%S.%f %m-%d-%Y"))
+    print (COMPLETED_TERM)

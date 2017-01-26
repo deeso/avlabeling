@@ -1,4 +1,4 @@
-import sys, argparse, threading, json
+import sys, argparse, threading, json, shlex
 import subprocess, traceback, os, sys, sqlite3
 from basic_multi_host_commands import *
 
@@ -11,43 +11,45 @@ def time_str():
 parser = argparse.ArgumentParser(description="Perform fpscan on remote Linux hosts with paramiko")
 parser.add_argument('-user', help='user to log in with', type=str)
 parser.add_argument('-password', help='user to log in with', type=str)
-parser.add_argument('-hosts', help='hosts to connect to', nargs='*' type=str)
-parser.add_argument('-base_location', help='local directory base location (I mounted with NFS)', nargs='*' type=str)
-parser.add_argument('-avlabel_location', help='local directory base location (I mounted with NFS)', nargs='*' type=str)
+parser.add_argument('-hosts', help='hosts to connect to', nargs='*', type=str)
+parser.add_argument('-base_location', help='local directory base location (I mounted with NFS)', type=str)
+parser.add_argument('-avlabel_location', help='base location of avlabeling code on system', type=str)
 parser.add_argument('-total_files', help='Number of files so work is spread evenly', type=int)
-parser.add_argument('-sqlite_location', help='Location of the sqlite_db', type=int)
+parser.add_argument('-sqlite_location', help='Location of the sqlite_db', type=str)
 
 START_DATA_TERM = "=====START_DATA_DUMP====="
 END_DATA_TERM = "=====END_DATA_DUMP====="
 # print ("Started: %s"%stime.strftime("%H:%M:%S.%f %m-%d-%Y"))
 # print ("Ended: %s"%etime.strftime("%H:%M:%S.%f %m-%d-%Y"))
 COMPLETED_TERM = "=====COMPLETED====="
-FPSCAN_AVLABEL_CMD = "python {avlabel_dir}/fpscan_avlabeling_remote.py {base_location} {start} {end}"
+FPSCAN_AVLABEL_CMD = "python {avlabel_location}/fpscan_avlabeling.py {base_location} {start} {end}"
 def generate_command(avlabel_location, base_location, start, end):
     cmd_dict = {'avlabel_location':avlabel_location, 'base_location':base_location, 'start':start, 'end':end}
     cmd = FPSCAN_AVLABEL_CMD.format(**cmd_dict)
     return cmd
 
 def execute_remote_command(username, password, host, command, output_sqllite_db):
-    data = exec_cmds(host, username, password, [command, ])
+    client = ssh_to_target(host, username=username, password=password)
+    data = exec_cmds(client, password, [command, ])
     process = True
-    if data.find(START_DATA_TERM) == -1:
+    _data = "".join(data)
+    if _data.find(START_DATA_TERM) == -1:
         print ("[X] Failed to run command and get back data, no data start")
         process = False
 
-    if data.find(END_DATA_TERM) == -1:
+    if _data.find(END_DATA_TERM) == -1:
         print ("[X] Failed to run command and get back data, no data end")
         process = False
 
-    raw_results = data.split(START_DATA_TERM)[1].split(END_DATA_TERM)[0]
+    raw_results = _data.split(START_DATA_TERM)[1].split(END_DATA_TERM)[0]
     # XXX This is pretty dangerous, evaluating the Python dictionary to get an object
     # json might be better
     hash_results = json.loads(raw_results)
     if len(hashes_labels) > 0:
         write_files_results(hashes_labels, output_sqllite_db, 'fpscan')
 
-    if data.find(COMPLETED_TERM) > 0:
-        completed = data.split(END_DATA_TERM)[1].split(COMPLETED_TERM)[0]
+    if _data.find(COMPLETED_TERM) > 0:
+        completed = _data.split(END_DATA_TERM)[1].split(COMPLETED_TERM)[0]
         print (completed)
 
 
@@ -86,7 +88,7 @@ def post_process_data(raw_results, base_location=None):
         if f.find(VIRUS_SHARE_HASH) == -1:
             print ("[X] File entry does not contain a VIRUS_SHARE separator: %s"%f)
             continue
-        
+
         hash_results[h] = (label, line.strip())
     return hash_results
 
@@ -102,6 +104,7 @@ def perform_fp_scan_hosts(username, password, host_list, commands, output_sqllit
         print ("[=] %s Started Host (%s) command: %s"%(time_str(), host, command))
         t.start()
         threads.append(t)
+        pos += 1
 
     print ("[=] %s All commands started waiting for the threads to complete."%(time_str()))
     for t in threads:
@@ -137,23 +140,24 @@ if __name__ == '__main__':
         init_database(args.sqlite_location)
 
 
-    window = long(float(total_files) / len(hosts))
+    window = long(float(args.total_files) / len(args.hosts))
     extra = 0
 
-    if total_files != window * len(hosts):
-        extra = total_files - (window * len(hosts))
+    if args.total_files != window * len(args.hosts):
+        extra = args.total_files - (window * len(args.hosts))
 
     offsets = []
     pos = 0
     offset = 0
     commands = []
     cnt = 0
-    while pos < len(hosts):
+    while pos < len(args.hosts):
         start = offset
         end = offset+window
-        cmd = generate_command(avlabel_location, base_location, start, end)
+        cmd = generate_command(args.avlabel_location, args.base_location, start, end)
         if extra > 0 and pos == len(hosts) -1:
-            cmd = generate_command(avlabel_location, base_location, start, end+extra)
+            cmd = generate_command(args.avlabel_location, args.base_location, start, end+extra)
         commands.append(cmd)
+        pos += 1
 
     perform_fp_scan_hosts(args.user, args.password, args.hosts, commands, args.sqlite_location)
