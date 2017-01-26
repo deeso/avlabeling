@@ -155,9 +155,10 @@ if __name__ == '__main__':
         start = offset
         end = offset+window
         cmd = generate_command(args.avlabel_location, args.base_location, start, end)
-        if extra > 0 and pos == len(hosts) -1:
+        if extra > 0 and pos == len(args.hosts) -1:
             cmd = generate_command(args.avlabel_location, args.base_location, start, end+extra)
         commands.append(cmd)
+        offset += window
         pos += 1
 
     perform_fp_scan_hosts(args.user, args.password, args.hosts, commands, args.sqlite_location)
