@@ -58,6 +58,7 @@ def read_samples_directory(base_location):
 
 def write_files_results(hash_results, output_sqllite_db, av_engine='clamav'):
     conn = sqlite3.connect(output_sqllite_db)
+    conn.text_factory = str
     c = conn.cursor()
     rows = []
     for h,l_m in hash_results.items():
@@ -84,6 +85,11 @@ if __name__ == '__main__':
     end = len(samples) if end > len(samples) else end
     the_files = samples[start:end]
     hashes_labels = {}
+    try:
+        os.stat(output_sqllite_db)
+    except:
+        init_database(output_sqllite_db)
+
     pos = 0
     window = 200
     _end = len(the_files)
