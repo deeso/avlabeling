@@ -109,28 +109,28 @@ if __name__ == '__main__':
 
     print ("Started: %s"%stime.strftime("%H:%M:%S.%f %m-%d-%Y"))
     print ("Ended: %s"%etime.strftime("%H:%M:%S.%f %m-%d-%Y"))
-# python avlabeling.py /research_data/test/   0 2000 /research_data/hash_labels.db
 
-#python avlabeling.py /research_data/test/   0 5700 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   5700 11400 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   11400 17100 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   17100 22800 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   22800 28500 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   28500 34200 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   34200 39900 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   39900 45600 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   45600 51300 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   51300 57000 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   57000 62700 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   62700 68400 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   68400 74100 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   74100 79800 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   79800 85500 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   85500 91200 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   91200 96900 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   96900 102600 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   102600 108300 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   108300 114000 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   114000 119700 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   119700 125400 /research_data/hash_labels.db &
-#python avlabeling.py /research_data/test/   125400 131100 /research_data/hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 0 5700 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 5700 11400 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 11400 17100 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 17100 22800 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 22800 28500 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 28500 34200 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 34200 39900 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 39900 45600 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 45600 51300 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 51300 57000 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 57000 62700 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 62700 68400 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 68400 74100 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 74100 79800 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 79800 85500 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 85500 91200 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 91200 96900 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 96900 102600 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 102600 108300 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 108300 114000 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 114000 119700 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 119700 125400 /research_data/clamscan_hash_labels.db &
+#python clamscan_avlabeling.py /research_data/malware_scan/ 125400 131100 /research_data/clamscan_hash_labels.db &
+

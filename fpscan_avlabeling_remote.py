@@ -162,3 +162,7 @@ if __name__ == '__main__':
         pos += 1
 
     perform_fp_scan_hosts(args.user, args.password, args.hosts, commands, args.sqlite_location)
+
+
+#python fpscan_avlabeling_remote.py -user UsErNaMe -password PaSSw0rd -hosts fprotect-workx32-00 fprotect-workx32-01 fprotect-workx32-02 fprotect-workx32-03 fprotect-workx32-04 fprotect-workx32-05 fprotect-workx32-11 fprotect-workx32-12 fprotect-workx32-13 fprotect-workx32-14 fprotect-workx32-15 -base_location /srv/nfs/malware_scan/ -avlabel_location /home/fprotect/avlabeling/ -total_files 131072 -sqlite_location /research_data/fpscan_hash_results.db
+
