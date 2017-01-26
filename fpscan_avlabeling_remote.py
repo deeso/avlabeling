@@ -45,8 +45,8 @@ def execute_remote_command(username, password, host, command, output_sqllite_db)
     # XXX This is pretty dangerous, evaluating the Python dictionary to get an object
     # json might be better
     hash_results = json.loads(raw_results)
-    if len(hashes_labels) > 0:
-        write_files_results(hashes_labels, output_sqllite_db, 'fpscan')
+    if len(hash_results) > 0:
+        write_files_results(hash_results, output_sqllite_db, 'fpscan')
 
     if _data.find(COMPLETED_TERM) > 0:
         completed = _data.split(END_DATA_TERM)[1].split(COMPLETED_TERM)[0]
