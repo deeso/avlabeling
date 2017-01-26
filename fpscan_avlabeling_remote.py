@@ -1,4 +1,4 @@
-import subprocess, traceback, os, sys, sqlite3
+import subprocess, traceback, os, sys, sqlite3, json
 from datetime import datetime
 
 def time_str():
@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
     etime = datetime.now()
     print ("=====START_DATA_DUMP=====")
-    str(hashes_labels)
+    print (json.dumps(hashes_labels))
     print ("=====END_DATA_DUMP=====")
     print ("Started: %s"%stime.strftime("%H:%M:%S.%f %m-%d-%Y"))
     print ("Ended: %s"%etime.strftime("%H:%M:%S.%f %m-%d-%Y"))
