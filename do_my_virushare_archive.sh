@@ -4,13 +4,13 @@ echo "Starting: ${START}"
 
 
 
-if [ $# -ne 6 ]; then
+if [ $# -ne 1 ]; then
     echo "${0}: usage: do_my_virushare_archives.sh <VirusShare_Path>"
     echo "\tVirusShare_Path: path where the ZIP archive can be found"
     exit 1
 fi
 
-$VS_ARCHIVE_PATH=$1
+VS_ARCHIVE_PATH=$1
 
 sh perform_all_stuff_scan.sh $VS_ARCHIVE_PATH VirusShare_00000 \
         /research_data/virus_share_malware_labels/ /research_data/malware_scan \
