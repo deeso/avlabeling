@@ -101,6 +101,7 @@ def write_files_results(hash_results, output_sqllite_db, av_engine='clamav'):
     for h,l_m in hash_results.items():
         l, m = l_m
         rows.append((h,l, m, av_engine))
+    print ("[=] %s Inserted %d results into db: %s."%(time_str(), len(rows), output_sqllite_db))
     c.executemany("INSERT INTO hash_labels VALUES (?,?,?,?)", rows)
     conn.commit()
 

@@ -35,19 +35,15 @@ if [ $# -le 6 ]; then
     exit 1
 fi
 #Arg 1 Paths to VirusShare Archive name
-#export VIRUS_SHARE_NAME=VirusShare_00000
 VIRUS_SHARE_PATH=$1
 
 #Arg 2 VirusShare Archive name
-#export VIRUS_SHARE_NAME=VirusShare_00000
 VIRUS_SHARE_NAME=$2
 
 #Arg 3 Database locations for sqlite
-# export DB_DIRECTORY=/research_data/virus_share_malware_labels
 DB_DIRECTORY=$3
 
 #Arg 4 Malware directory
-# export MALWARE_DIRECTORY=/research_data/malware_scan/
 MALWARE_DIRECTORY=$4
 
 #Arg 5 Local AV Labeling code
@@ -58,12 +54,6 @@ REMOTE_MALWARE_LOCATION=$6
 
 #Arg 7 Remote AV labeling code
 REMOTE_AVLABELING=$7
-
-##Arg 8 Remote username
-#FP_USERNAME=$8
-#
-##Arg 9 Remote user password
-#FP_PASSWORD=$9
 
 if [ $# -ge 8 ]; then
     FP_USERNAME=$8
@@ -87,13 +77,13 @@ fi
 VIRUS_SHARE_PATH_NAME=${VIRUS_SHARE_PATH}/${VIRUS_SHARE_NAME}".zip"
 
 
+
 CLAMSCANAV_AVLABELING_DIRECTORY=${LOCAL_AVLABELING}
-CLAMAV_SCAN_DB=${DB_DIRECTORY}/${VIRUS_SHARE_NAME}${CLAMAV_DB_POST}
-
 FP_AVLABELING_DIRECTORY=$REMOTE_AVLABELING
-FP_MALWARE_LOCATION=$REMOTE_MALWARE_LOCATION
-FP_SCAN_DB=${DB_DIRECTORY}/${VIRUS_SHARE_NAME}${FP_DB_POST}
+CLAMAV_SCAN_DB_LOCATION=${DB_DIRECTORY}/${VIRUS_SHARE_NAME}${CLAMAV_DB_POST}
+FP_SCAN_DB_LOCATION=${DB_DIRECTORY}/${VIRUS_SHARE_NAME}${FP_DB_POST}
 
+FP_MALWARE_LOCATION=$REMOTE_MALWARE_LOCATION
 UTIL_AVLABELING=${LOCAL_AVLABELING}/${UTIL}
 
 # clean-up current malware (move to new directory and delete)
@@ -114,10 +104,10 @@ unzip -q -P infected $VIRUS_SHARE_PATH_NAME
 # move to the local avlabeling code and run the scans
 cd $LOCAL_AVLABELING
 CLAMAV_COMMAND="${CLAMAV_AVLABELING} -num_procs 22 -scan_location ${MALWARE_DIRECTORY} -malware_location ${MALWARE_DIRECTORY}"
-CLAMAV_COMMAND="${CLAMAV_COMMAND} -avlabel_location ${CLAMSCANAV_AVLABELING_DIRECTORY} -sqlite_location ${CLAMAV_SCAN_DB}"
+CLAMAV_COMMAND="${CLAMAV_COMMAND} -avlabel_location ${CLAMSCANAV_AVLABELING_DIRECTORY} -sqlite_location ${CLAMAV_SCAN_DB_LOCATION}"
 
 FPSCAN_COMMAND="$FP_AVLABELING -user $FP_USERNAME -password $FP_PASSWORD -hosts $FP_HOST_LIST -scan_location ${MALWARE_DIRECTORY}"
-FPSCAN_COMMAND="${FPSCAN_COMMAND} -malware_location ${FP_MALWARE_LOCATION} -avlabel_location ${FP_AVLABELING_DIRECTORY} -sqlite_location $FP_SCAN_DB" 
+FPSCAN_COMMAND="${FPSCAN_COMMAND} -malware_location ${FP_MALWARE_LOCATION} -avlabel_location ${FP_AVLABELING_DIRECTORY} -sqlite_location $FP_SCAN_DB_LOCATION" 
 
 # run the clamav labeling script
 echo "Performing clamav scan: python ${CLAMAV_COMMAND}"
