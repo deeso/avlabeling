@@ -1,9 +1,14 @@
-import subprocess, traceback, os, sys, sqlite3
+import subprocess, traceback, os, sys, sqlite3, json
 from datetime import datetime
 
 def time_str():
     return str(datetime.now().strftime("%H:%M:%S.%f %m-%d-%Y"))
 
+START_DATA_TERM = "=====START_DATA_DUMP====="
+END_DATA_TERM = "=====END_DATA_DUMP====="
+# print ("Started: %s"%stime.strftime("%H:%M:%S.%f %m-%d-%Y"))
+# print ("Ended: %s"%etime.strftime("%H:%M:%S.%f %m-%d-%Y"))
+COMPLETED_TERM = "=====COMPLETED====="
 CLAMSCAN_ARGS = "clamscan {target_files}"
 def create_clamscan_cmd(target_files):
     keyed = {'target_files':" ".join(target_files)}
@@ -35,7 +40,7 @@ SPLIT_ON_THIS = '''----------- SCAN SUMMARY -----------'''
 LABEL_SEP = ': '
 VIRUS_SHARE_HASH = "VirusShare_"
 TAIL = ' FOUND'
-def post_process_data(raw_results, base_location=None):
+def post_process_data(raw_results, malware_location=None):
     results = raw_results.split(SPLIT_ON_THIS)[0].strip()
     lines = [i for i in results.splitlines()]
     hash_results = {}
@@ -52,43 +57,25 @@ def post_process_data(raw_results, base_location=None):
         hash_results[h] = (l.strip(), line)
     return hash_results
 
-def read_samples_directory(base_location):
-    files = [os.path.join(base_location, i) for i in os.listdir(base_location)]
+def read_samples_directory(malware_location):
+    files = [os.path.join(malware_location, i) for i in os.listdir(malware_location)]
     return files
-
-def write_files_results(hash_results, output_sqllite_db, av_engine='clamav'):
-    conn = sqlite3.connect(output_sqllite_db)
-    conn.text_factory = str
-    c = conn.cursor()
-    rows = []
-    for h,l_m in hash_results.items():
-        l, m = l_m
-        rows.append((h,l, m, av_engine))
-    c.executemany("INSERT INTO hash_labels VALUES (?,?,?,?)", rows)
-    conn.commit()
-
-def init_database(output_sqllite_db):
-    conn = sqlite3.connect(output_sqllite_db)
-    c = conn.cursor()
-    c.execute('''CREATE TABLE hash_labels (hash, label, meta, av_engine)''')
-    c.close()
-    conn.commit()
 
 if __name__ == '__main__':
     #print sys.argv
-    base_location = sys.argv[1]
+    malware_location = sys.argv[1]
     start = int(sys.argv[2])
     end = int(sys.argv[3])
-    output_sqllite_db = sys.argv[4]
+    #output_sqllite_db = sys.argv[4]
     stime = datetime.now()
-    samples = read_samples_directory(base_location)
+    samples = read_samples_directory(malware_location)
     end = len(samples) if end > len(samples) else end
     the_files = samples[start:end]
     hashes_labels = {}
-    try:
-        os.stat(output_sqllite_db)
-    except:
-        init_database(output_sqllite_db)
+    #try:
+    #    os.stat(output_sqllite_db)
+    #except:
+    #    init_database(output_sqllite_db)
 
     pos = 0
     window = 200
@@ -102,13 +89,20 @@ if __name__ == '__main__':
         print ("[=] Processed %d files @ %d"%(len(_hashes_labels), pos+start))
         pos += window
 
-    if len(hashes_labels) > 0:
-        write_files_results(hashes_labels, output_sqllite_db)
+    #if len(hashes_labels) > 0:
+    #    write_files_results(hashes_labels, output_sqllite_db)
 
     etime = datetime.now()
 
+    #print ("Started: %s"%stime.strftime("%H:%M:%S.%f %m-%d-%Y"))
+    #print ("Ended: %s"%etime.strftime("%H:%M:%S.%f %m-%d-%Y"))
+    print (START_DATA_TERM)
+    print (json.dumps(hashes_labels))
+    print (END_DATA_TERM)
+    etime = datetime.now()
     print ("Started: %s"%stime.strftime("%H:%M:%S.%f %m-%d-%Y"))
     print ("Ended: %s"%etime.strftime("%H:%M:%S.%f %m-%d-%Y"))
+    print (COMPLETED_TERM)
 
 #python clamscan_avlabeling.py /research_data/malware_scan/ 0 5700 /research_data/clamscan_hash_labels.db &
 #python clamscan_avlabeling.py /research_data/malware_scan/ 5700 11400 /research_data/clamscan_hash_labels.db &

@@ -26,13 +26,13 @@ def exec_command (cmd, shell=False):
     else:
         raise Exception("exec_command requires a string or list as a parameter")
 
-    print ("%s: Executing cmd: %s"%(time_str(), cmd ))
+    #print ("%s: Executing cmd: %s"%(time_str(), cmd ))
     p = subprocess.Popen(shlex.split(cmd), shell=shell, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     content = None
     try:
-        content = p.communicate()[0].decode('ascii', 'replace')
+        content = p.communicate()[0].decode('iso8859-1', 'replace')
         p.wait()
-        content = content + p.communicate()[0].decode('ascii', 'replace')
+        content = content + p.communicate()[0].decode('iso8859-1', 'replace')
     except:
         pass
 

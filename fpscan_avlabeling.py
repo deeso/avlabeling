@@ -34,7 +34,7 @@ def perform_fpscan(target_files):
 LABEL_SEP = '] <'
 VIRUS_SHARE_HASH = "VirusShare_"
 INFECTED_OBJECTS = "[Contains infected objects]"
-def post_process_data(raw_results, base_location=None):
+def post_process_data(raw_results, malware_location=None):
     lines = [i.strip() for i in raw_results.splitlines() if i.find('[') == 0]
     hash_results = {}
     for line in lines:
@@ -56,8 +56,8 @@ def post_process_data(raw_results, base_location=None):
         hash_results[h] = (label, line.strip())
     return hash_results
 
-def read_samples_directory(base_location):
-    files = [os.path.join(base_location, i) for i in os.listdir(base_location)]
+def read_samples_directory(malware_location):
+    files = [os.path.join(malware_location, i) for i in os.listdir(malware_location)]
     return files
 
 def write_files_results(hash_results, output_sqllite_db, av_engine='clamav'):
@@ -82,7 +82,7 @@ def init_database(output_sqllite_db):
 
 if __name__ == '__main__':
     #print sys.argv
-    base_location = sys.argv[1]
+    malware_location = sys.argv[1]
     start = int(sys.argv[2])
     end = int(sys.argv[3])
     output_sqllite_db = sys.argv[4]
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         init_database(output_sqllite_db)
 
     stime = datetime.now()
-    samples = read_samples_directory(base_location)
+    samples = read_samples_directory(malware_location)
     end = len(samples) if end > len(samples) else end
     the_files = samples[start:end]
     hashes_labels = {}
