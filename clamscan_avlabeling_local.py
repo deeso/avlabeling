@@ -135,7 +135,7 @@ if __name__ == '__main__':
             print ("[X] Must provide a directory to scan, please")
             sys.exit(1)
 
-
+    print args.total_files
     if args.sqlite_location is None:
         print ("[X] Must provide sqlite location")
         sys.exit(1)

@@ -84,7 +84,6 @@ fi
 #echo $FP_PASSWORD
 
 
-RM_MALWARE_DIRECTORY="/research_data/malware_scan_old/"
 VIRUS_SHARE_PATH_NAME=${VIRUS_SHARE_PATH}/${VIRUS_SHARE_NAME}".zip"
 
 
@@ -105,14 +104,11 @@ echo "Performing malware clean up: python ${RM_FILES_COMMAND}"
 cd $LOCAL_AVLABELING
 
 python $RM_FILES_COMMAND
-# mkdir $RM_MALWARE_DIRECTORY
-# cd $MALWARE_DIRECTORY
-# mv * $RM_MALWARE_DIRECTORY
-# rm -rf $RM_MALWARE_DIRECTORY &
 
 # unzip the malware in the directory
 echo "Performing unzipping ${VIRUS_SHARE_PATH_NAME} to ${MALWARE_DIRECTORY}"
 cd $MALWARE_DIRECTORY
+echo "Executing: unzip -q -P infected ${VIRUS_SHARE_PATH_NAME}"
 unzip -q -P infected $VIRUS_SHARE_PATH_NAME
 
 # move to the local avlabeling code and run the scans
@@ -129,6 +125,3 @@ python ${CLAMAV_COMMAND} &
 
 echo "Performing FP scan: python ${FPSCAN_COMMAND}"
 python ${FPSCAN_COMMAND}
-                                   
-
-
