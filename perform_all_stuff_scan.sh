@@ -50,20 +50,20 @@ DB_DIRECTORY=$3
 # export MALWARE_DIRECTORY=/research_data/malware_scan/
 MALWARE_DIRECTORY=$4
 
-#Arg 4 Local AV Labeling code
+#Arg 5 Local AV Labeling code
 LOCAL_AVLABELING=$5
 
-#Arg 5 Remote AV Labeling code
-REMOTE_AVLABELING=$6
+#Arg 6 Remote Malware location
+REMOTE_MALWARE_LOCATION=$6
 
-#Arg 6 Remote AV malware directory
-REMOTE_MALWARE_LOCATION=$7
+#Arg 7 Remote AV labeling code
+REMOTE_AVLABELING=$7
 
-##Arg 7 Remote username
-#FP_USERNAME=$7
+##Arg 8 Remote username
+#FP_USERNAME=$8
 #
-##Arg 8 Remote user password
-#FP_PASSWORD=$8
+##Arg 9 Remote user password
+#FP_PASSWORD=$9
 
 if [ $# -ge 8 ]; then
     FP_USERNAME=$8
@@ -118,14 +118,14 @@ unzip -q -P infected $VIRUS_SHARE_PATH_NAME
 # move to the local avlabeling code and run the scans
 cd $LOCAL_AVLABELING
 CLAMAV_COMMAND="${CLAMAV_AVLABELING} -num_procs 22 -scan_location ${MALWARE_DIRECTORY} -malware_location ${MALWARE_DIRECTORY}"
-CLAMAV_COMMAND="${CLAMAV_COMMAND} -avlabel_location ${CLAMSCANAV_AVLABELING_DIRECTORY} -sqlite_location ${CLAMAV_SCAN_DB} &"
+CLAMAV_COMMAND="${CLAMAV_COMMAND} -avlabel_location ${CLAMSCANAV_AVLABELING_DIRECTORY} -sqlite_location ${CLAMAV_SCAN_DB}"
 
 FPSCAN_COMMAND="$FP_AVLABELING -user $FP_USERNAME -password $FP_PASSWORD -hosts $FP_HOST_LIST -scan_location ${MALWARE_DIRECTORY}"
 FPSCAN_COMMAND="${FPSCAN_COMMAND} -malware_location ${FP_MALWARE_LOCATION} -avlabel_location ${FP_AVLABELING_DIRECTORY} -sqlite_location $FP_SCAN_DB" 
 
 # run the clamav labeling script
 echo "Performing clamav scan: python ${CLAMAV_COMMAND}"
-python ${CLAMAV_COMMAND}
+python ${CLAMAV_COMMAND} &
 
 echo "Performing FP scan: python ${FPSCAN_COMMAND}"
 python ${FPSCAN_COMMAND}
